@@ -46,6 +46,7 @@ public class SolreabastecimientoController {
         }
     }
     
+    
     @GetMapping("/{id_solicitud}")
     public ResponseEntity<Solreabastecimiento> getById(@PathVariable Long id_solicitud) {
         Solreabastecimiento solicitud = solreabastecimientoService.findById(id_solicitud);
