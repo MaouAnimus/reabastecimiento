@@ -3,7 +3,6 @@ package com.ecomarket.reabastecimiento.model;
 import java.util.List;
 
 import com.ecomarket.reabastecimiento.enums.EstadoSolicitud;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
