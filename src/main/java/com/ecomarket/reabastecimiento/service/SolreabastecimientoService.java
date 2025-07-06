@@ -18,8 +18,10 @@ public class SolreabastecimientoService {
     @Autowired
     private SolreabastecimientoRepository solreabastecimientoRepository;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     public Solreabastecimiento crearSolicitud(Solreabastecimiento resupply) {
-        RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8083/api/usuario/" + resupply.getIdEncargado();
         EncargadoDTO encargado = restTemplate.getForObject(url, EncargadoDTO.class);
         String urlProv = "http://localhost:8084/api/proveedores/" + resupply.getIdProveedor();
@@ -44,8 +46,7 @@ public class SolreabastecimientoService {
                 throw new RuntimeException("Producto no encontrado con ID: " + p.getIdProducto());
             }
             p.setProducto(producto);
-
-        p.setSolicitudReabastecimiento(resupply);
+            p.setSolicitudReabastecimiento(resupply);
     }
         }
             
@@ -58,7 +59,6 @@ public class SolreabastecimientoService {
 
     public List<Solreabastecimiento> findAll() {
         List<Solreabastecimiento> lista = solreabastecimientoRepository.findAll();
-        RestTemplate restTemplate = new RestTemplate();
         for (Solreabastecimiento solicitud : lista) {
             if (solicitud.getProductosSolicitados() != null) {
                 for (SolicitudProducto sp : solicitud.getProductosSolicitados()) {
@@ -80,13 +80,10 @@ public class SolreabastecimientoService {
             if (resupply.getEstadoS() != null) {
                 solicitudExistente.setEstadoS(resupply.getEstadoS());
             }
-            return solreabastecimientoRepository.save(resupply);
-        } else {
-            return null;
-        }
+            solreabastecimientoRepository.save(solicitudExistente);
+            return solicitudExistente;
+        } 
+        return null;
     }
-
-    
-
 
 }
