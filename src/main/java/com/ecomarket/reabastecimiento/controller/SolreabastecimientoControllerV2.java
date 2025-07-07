@@ -8,9 +8,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ecomarket.reabastecimiento.model.Solreabastecimiento;
 import com.ecomarket.reabastecimiento.service.SolreabastecimientoService;
@@ -47,7 +45,7 @@ public class SolreabastecimientoControllerV2 {
     }
 
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<EntityModel<Solreabastecimiento>> buscarSolicitud(Long id) {
+    public ResponseEntity<EntityModel<Solreabastecimiento>> buscarSolicitud(@PathVariable Long id) {
         Solreabastecimiento solicitud = solreabastecimientoService.findById(id);
         if (solicitud == null) {
             return ResponseEntity.notFound().build();
@@ -60,6 +58,27 @@ public class SolreabastecimientoControllerV2 {
         );
 
         return ResponseEntity.ok(solicitudModel);
+    }
+
+    @GetMapping(value = "/buscar", produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity<CollectionModel<EntityModel<Solreabastecimiento>>> buscarSolicitudesV2() {
+        List<Solreabastecimiento> solreabastecimiento = solreabastecimientoService.getAll();
+        if (solreabastecimiento == null || solreabastecimiento.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        List<EntityModel<Solreabastecimiento>> solreabastecimientoModels = solreabastecimiento.stream()
+                .map(sol -> EntityModel.of(sol,
+                        linkTo(methodOn(SolreabastecimientoControllerV2.class)
+                        .buscarSolicitud(sol.getIdSolicitud())).withSelfRel()))
+                .toList();
+
+        CollectionModel<EntityModel<Solreabastecimiento>> collectionModel = CollectionModel.of(
+            solreabastecimientoModels,
+            linkTo(methodOn(SolreabastecimientoControllerV2.class).buscarSolicitudesV2()).withSelfRel()
+        );
+
+        return ResponseEntity.ok(collectionModel);
     }
 
 }
