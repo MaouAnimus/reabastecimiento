@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-
 @RestController
 @RequestMapping("/api/resupply")
 public class SolreabastecimientoController {
@@ -48,7 +47,7 @@ public class SolreabastecimientoController {
     
     
     @GetMapping("/{id_solicitud}")
-    public ResponseEntity<Solreabastecimiento> getById(@PathVariable Long id_solicitud) {
+    public ResponseEntity<Solreabastecimiento> getById(@PathVariable Long id_solicitud, Solreabastecimiento solreabastecimiento) {
         Solreabastecimiento solicitud = solreabastecimientoService.findById(id_solicitud);
         if (solicitud != null) {
             return new ResponseEntity<>(solicitud, HttpStatus.OK);

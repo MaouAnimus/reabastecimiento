@@ -1,5 +1,6 @@
 package com.ecomarket.reabastecimiento.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,4 +87,12 @@ public class SolreabastecimientoService {
         return null;
     }
 
+    public List<Solreabastecimiento> getAll() {
+        List<Solreabastecimiento> solicitudes = solreabastecimientoRepository.findAll();
+        if (solicitudes != null && !solicitudes.isEmpty()) 
+        {
+            return solicitudes;       
+        }
+        return Collections.emptyList();
+    }
 }
